@@ -77,7 +77,7 @@ The dataset contains information including:
 - Revenue
 - Profit
 - Dates
-- Payment methods (if available)
+- Payment methods
 
 
 # 🔄 Project Workflow
@@ -121,7 +121,6 @@ Business Recommendations
 - Seaborn
 - Scikit-learn
 - XGBoost
-- Prophet / ARIMA
 - Jupyter Notebook
 - Streamlit
 - Git
