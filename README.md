@@ -1,5 +1,3 @@
-# Global-Ecommerce-Sales
-AI-powered customer intelligence platform that analyzes global e-commerce sales to identify the most profitable countries for expansion and predict future market profitability using machine learning, forecasting, and interactive business intelligence dashboards.
 # 🌍 AI-Powered Customer Intelligence Platform for Global Market Expansion
 
 An end-to-end data science and machine learning platform that analyzes global e-commerce sales data to identify the most profitable countries for business expansion and predict future market profitability. The project combines exploratory data analysis, predictive modeling, and interactive business intelligence to support strategic, data-driven decision making.
