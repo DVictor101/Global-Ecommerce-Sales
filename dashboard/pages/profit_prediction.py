@@ -1,11 +1,20 @@
 import streamlit as st
 import pandas as pd
 import joblib
+from pathlib import Path
 
-model = joblib.load("../models/profit_prediction_model.pkl")
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+MODEL_PATH = BASE_DIR / "models" / "profit_prediction_model.pkl"
+
+model = joblib.load(MODEL_PATH)
 @st.cache_data
 def load_data():
-    return pd.read_csv("../data_folder/Feature_engineered_data.csv")
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    DATA_PATH = BASE_DIR / "data_folder" / "Feature_engineered_data.csv"
+
+    df = pd.read_csv(DATA_PATH)
+    return df
 
 df = load_data()
 

@@ -1,11 +1,16 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from pathlib import Path
 
 #data
 @st.cache_data
 def load_data():
-    df = pd.read_csv("../data_folder/Feature_engineered_data.csv")
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
+    DATA_PATH = BASE_DIR / "data_folder" / "Feature_engineered_data.csv"
+
+    df = pd.read_csv(DATA_PATH)
     df["Order_Date"] = pd.to_datetime(df["Order_Date"])
     return df
 
