@@ -72,7 +72,7 @@ model.fit(forecast_df)
 #create future dates
 future = model.make_future_dataframe(
     periods=months,
-    freq="M"
+    freq="ME"
 )
 
 #predict
