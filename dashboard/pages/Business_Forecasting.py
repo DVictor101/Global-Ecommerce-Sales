@@ -18,10 +18,10 @@ def load_data():
 df = load_data()
 
 #title
-st.title("📈 Revenue & Profit Forecasting")
+st.title("📈 Revenue & Profit Forecast")
 
 st.markdown("""
-Forecast future business performance using Facebook Prophet.
+Forecast future business performance.
 """)
 
 

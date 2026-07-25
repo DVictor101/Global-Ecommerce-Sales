@@ -35,8 +35,8 @@ profit_margin = (
 
 k1, k2, k3, k4, k5 = st.columns(5)
 
-k1.metric("Revenue", f"${total_revenue:,.0f}")
-k2.metric("Profit", f"${total_profit:,.0f}")
+k1.metric("Revenue", f"${total_revenue:,}")
+k2.metric("Profit", f"${total_profit:,}")
 k3.metric("Orders", f"{total_orders:,}")
 k4.metric("Countries", countries)
 k5.metric("Profit Margin", f"{profit_margin:.2f}%")

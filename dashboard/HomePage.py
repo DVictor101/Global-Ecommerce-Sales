@@ -54,19 +54,6 @@ st.markdown("""
 📊ProfitAI
 </div>
 
-<div class="menu">
-
-<a href="#">Dashboard</a>
-
-<a href="#">Country Analysis</a>
-
-<a href="#">Forecast</a>
-
-<a href="#">Prediction</a>
-
-<a href="#">Contact</a>
-
-</div>
 
 </div>
 """, unsafe_allow_html=True)
@@ -104,24 +91,25 @@ col1, col2, col3 = st.columns(3)
 with col1:
     st.markdown("""
     <div class="feature-card">
-        <div class="icon">📊</div>
-        <h3>Business Intelligence</h3>
+    <div>fff</div>
+        <h3>Monitor your business at a glance</h3>
     </div>
     """, unsafe_allow_html=True)
+
 
 with col2:
     st.markdown("""
     <div class="feature-card">
-        <div class="icon">🤖</div>
-        <h3>Prediction</h3>
+        <div>fff</div>
+        <h3>Predict profitability before decisions are made</h3>
     </div>
     """, unsafe_allow_html=True)
 
 with col3:
     st.markdown("""
     <div class="feature-card">
-        <div class="icon">📈</div>
-        <h3>Forecasting</h3>
+        <div>fff</div>
+        <h3>Plan for the future with confidence</h3>
     </div>
     """, unsafe_allow_html=True)
 
@@ -132,24 +120,24 @@ col4, col5, col6 = st.columns(3)
 with col4:
     st.markdown("""
     <div class="feature-card">
-        <div class="icon">🌍</div>
-        <h3>Country Recommendation</h3>
+        <div>fff</div>
+        <h3>Discover your next high-growth market</h3>
     </div>
     """, unsafe_allow_html=True)
 
 with col5:
     st.markdown("""
     <div class="feature-card">
-        <div class="icon">📦</div>
-        <h3>Product Insight</h3>
+        <div>fff</div>
+        <h3>Focus on products that drive growth</h3>
     </div>
     """, unsafe_allow_html=True)
 
 with col6:
     st.markdown("""
     <div class="feature-card">
-        <div class="icon">💡</div>
-        <h3>Business Recommendations</h3>
+        <div>fff</div>
+        <h3>Turn analytics into business strategy</h3>
     </div>
     """, unsafe_allow_html=True)
 
@@ -161,7 +149,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("""
 <hr>
 <center style="color:#2A0B45; font-size:18px; font-weight:500;">
-Made by <strong>Segun A.</strong><br><br>
+Designed by <strong>Segun A.</strong><br><br>
 </center>
 """, unsafe_allow_html=True)
 

@@ -18,11 +18,10 @@ def load_data():
 
 df = load_data()
 
-st.title("🤖 AI Profit Prediction")
+st.title("AI Profit Prediction")
 
 st.markdown("""
-Predict the expected profit for a future order based on
-business characteristics.
+Predict the expected profit for a future order.
 """)
 
 #user inputs
