@@ -1,45 +1,167 @@
 import streamlit as st
 
+#stetting preferred padding
+st.markdown("""
+<style>
+
+/* Remove default Streamlit padding */
+.block-container{
+    padding-top:0rem;
+    padding-left:0rem;
+    padding-right:0rem;
+    padding-bottom:0rem;
+}
+
+/* Remove the top blank space */
+[data-testid="stHeader"]{
+    background:transparent;
+}
+
+/* Make the app use the full width */
+[data-testid="stAppViewContainer"]{
+    padding:0;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 st.set_page_config(
     page_title="AI-Powered Customer Intelligence Platform",
-    page_icon = "🌍",
+    
     layout = "wide",
-    initial_sidebar_state = "expanded"
+    initial_sidebar_state = "collapsed"
 )
 
 
-st.title("🌍 AI-Poered Customer Intelligence Platform")
+
+def load_css():
+
+    with open("./assets/style.css") as f:
+        st.markdown(
+            f"<style>{f.read()}</style>",
+            unsafe_allow_html=True
+        )
+
+load_css()
+
+#navigation
 st.markdown("""
-Welcome to the Global E-Commerce Intelligence Dashboard.
+<div class="navbar">
 
-Use the navigatioon menu on the left to explore:
+<div class="logo">
+📊ProfitAI
+</div>
 
-- 📊 Dashboard
-- 🌍 Country Analysis
-- 📦 Product Analysis
-- 👥 Customer Insights
-- 🤖 Profit Prediction
-- 📈 Forecasting
-""")
+<div class="menu">
+
+<a href="#">Dashboard</a>
+
+<a href="#">Country Analysis</a>
+
+<a href="#">Forecast</a>
+
+<a href="#">Prediction</a>
+
+<a href="#">Contact</a>
+
+</div>
+
+</div>
+""", unsafe_allow_html=True)
+
+#hero section
+st.markdown("""
+<div class="hero">
+<div class="hero-left">
+<div class="h1_col">
+<h1>
+AI-Powered
+<br class="brad">Global E-commerce Intelligence Platform<br></h1>
+<div>
+<div class="h_col_p">
+<p class="h_col">
+Make smarter business decisions with AI. Predict profitability, identify high-value markets, forecast future growth, and discover where your next expansion should be.
+</p></div>
+</div>
+</div>
+""", unsafe_allow_html=True)
+
+#features
+st.markdown("""
+<h2 class="wy">
+Why Choose ProfitAI?
+</h2>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="features-section">', unsafe_allow_html=True)
+
+
+#cards
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("""
+    <div class="feature-card">
+        <div class="icon">📊</div>
+        <h3>Business Intelligence</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div class="feature-card">
+        <div class="icon">🤖</div>
+        <h3>Prediction</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+    <div class="feature-card">
+        <div class="icon">📈</div>
+        <h3>Forecasting</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+col4, col5, col6 = st.columns(3)
+
+with col4:
+    st.markdown("""
+    <div class="feature-card">
+        <div class="icon">🌍</div>
+        <h3>Country Recommendation</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col5:
+    st.markdown("""
+    <div class="feature-card">
+        <div class="icon">📦</div>
+        <h3>Product Insight</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col6:
+    st.markdown("""
+    <div class="feature-card">
+        <div class="icon">💡</div>
+        <h3>Business Recommendations</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("</div>", unsafe_allow_html=True)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#footer
+st.markdown("""
+<hr>
+<center style="color:#2A0B45; font-size:18px; font-weight:500;">
+Made by <strong>Segun A.</strong><br><br>
+</center>
+""", unsafe_allow_html=True)
 
 
 
