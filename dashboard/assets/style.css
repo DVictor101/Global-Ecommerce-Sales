@@ -1,0 +1,239 @@
+/* Main page */
+.stApp {
+    background-color: #d9d6e7;
+}
+
+
+.navbar{
+
+display:flex;
+width:100%;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:20px 50px;
+
+background:#2A0B45;
+
+color: white;
+box-sizing:border-box;
+
+}
+
+
+.logo{
+
+font-size:28px;
+
+font-weight:bold;
+
+color:white;
+
+}
+
+.menu{
+
+display:flex;
+flex-wrap: wrap;
+justify-content: center;
+color:white;
+gap:20px;
+
+}
+
+
+
+.menu a{
+
+text-decoration:none;
+
+color:white;
+
+font-size:18px;
+
+transition:0.3s;
+
+}
+.menu a:hover{
+
+color:#C9A7FF;
+
+}
+.hero{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:80px 70px;
+
+gap:50px;
+
+}
+
+.buttons{
+
+display:flex;
+
+gap:25px;
+
+margin-top:40px;
+
+}
+
+.buttons a{
+
+background:#2A0B45;
+
+padding:18px 35px;
+
+border-radius:12px;
+
+text-decoration:none;
+
+color:white;
+
+font-weight:bold;
+
+transition:.3s;
+
+}
+
+.buttons a:hover{
+
+background:#1a0c4d;
+
+transform:translateY(-4px);
+
+}
+
+
+
+.hero-left h1{
+    font-size: 60px;      /* Increase size */
+    font-weight: bold;     /* Extra bold */
+    color: #111827;
+    line-height: 1.1;
+    margin-bottom: 25px;
+    letter-spacing: -2px;
+    line-height: 1.2;
+    max-width: 100%;
+}
+.brad{
+font-size: 100px;
+font-weight: bold;
+}
+
+.h_col_p{
+font-size: 70px;
+margin-top: -50px;
+}
+
+.hero-left p{
+
+    font-size:22px;
+
+    color:#6B7280;
+
+    line-height:1.7;
+
+    margin-top:25px;
+
+}
+.wy {
+    text-align: center;
+    color: #111827;
+    font-size: 40px;
+    font-weight: 700;
+    margin-top: 80px;
+    background:#2A0B45;
+}
+
+.feature-card{
+
+    background:white;
+
+    border:1px solid #E5E7EB;
+
+    border-radius:18px;
+
+    padding:35px;
+
+    text-align:center;
+
+    height:240px;
+
+    transition:.35s;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+
+}
+
+.feature-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 15px 40px rgba(0,0,0,.12);
+
+}
+
+.icon{
+
+    font-size:48px;
+
+    margin-bottom:20px;
+
+}
+
+.feature-card h3{
+
+    font-size:28px;
+
+    color:#111827;
+
+    margin-bottom:15px;
+
+}
+
+.feature-card p{
+
+    color:#6B7280;
+
+    font-size:18px;
+
+    line-height:1.6;
+
+}
+
+@media (max-width:768px){
+
+    .features-section{
+
+        padding-left:20px;
+
+        padding-right:20px;
+
+        margin-top:60px;
+
+    }
+
+    .feature-card{
+
+        height:auto;
+
+        margin-bottom:20px;
+
+    }
+
+}
+
+.features-section{
+    margin-top:100px;
+    padding-left:70px;
+    padding-right:70px;
+    margin-bottom:80px;
+}
