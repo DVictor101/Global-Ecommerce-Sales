@@ -23,7 +23,7 @@ st.markdown("---")
 @st.cache_data
 def load_data():
     BASE_DIR = Path(__file__).resolve().parent.parent
-    DATA_PATH = BASE_DIR / "data_folder" / "feature_engineered_data.csv"
+    DATA_PATH = BASE_DIR / "data_folder" / "feature_engineerd_data.csv"
 
     # Debugging (remove these after confirming it works)
     st.write("BASE_DIR:", BASE_DIR)
