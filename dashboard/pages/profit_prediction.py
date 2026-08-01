@@ -25,7 +25,19 @@ st.markdown("---")
 
 @st.cache_resource
 def load_model():
-    return joblib.load("models/profit_prediction_model.pkl")
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
+    MODEL_PATH = BASE_DIR / "models" / "profit_prediction_model.pkl"
+
+    st.write("BASE_DIR:", BASE_DIR)
+    st.write("MODEL_PATH:", MODEL_PATH)
+    st.write("Exists:", MODEL_PATH.exists())
+
+    if not MODEL_PATH.exists():
+        st.error(f"Model not found:\n{MODEL_PATH}")
+        st.stop()
+
+    return joblib.load(MODEL_PATH)
 
 model = load_model()
 

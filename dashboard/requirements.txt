@@ -6,3 +6,5 @@ joblib
 plotly
 prophet
 openpyxl
+shap
+xgboost
