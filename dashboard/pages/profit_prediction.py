@@ -29,9 +29,6 @@ def load_model():
 
     MODEL_PATH = BASE_DIR / "models" / "profit_prediction_model.pkl"
 
-    st.write("BASE_DIR:", BASE_DIR)
-    st.write("MODEL_PATH:", MODEL_PATH)
-    st.write("Exists:", MODEL_PATH.exists())
 
     if not MODEL_PATH.exists():
         st.error(f"Model not found:\n{MODEL_PATH}")
@@ -47,10 +44,6 @@ def load_data():
     BASE_DIR = Path(__file__).resolve().parent.parent
     DATA_PATH = BASE_DIR / "data_folder" / "feature_engineerd_data.csv"
 
-    # Debugging (remove these after confirming it works)
-    st.write("BASE_DIR:", BASE_DIR)
-    st.write("DATA_PATH:", DATA_PATH)
-    st.write("Exists:", DATA_PATH.exists())
 
     if not DATA_PATH.exists():
         st.error(f"Dataset not found:\n{DATA_PATH}")
