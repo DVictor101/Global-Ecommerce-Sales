@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from pathlib import Path
 
 #page confiuration
 st.set_page_config(
@@ -20,8 +21,12 @@ st.markdown("---")
 
 #loading dataset
 @st.cache_data
+@st.cache_data
 def load_data():
-    return pd.read_csv("../data_folder/feature_engineerd_data.csv")
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    DATA_PATH = BASE_DIR / "data_folder" / "feature_engineered_data.csv"
+
+    return pd.read_csv(DATA_PATH)
 
 from utils.filters import sidebar_filters
 
