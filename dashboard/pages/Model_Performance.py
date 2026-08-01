@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import shap
+from pathlib import Path
 import matplotlib.pyplot as plt
 from sklearn.metrics import (
     mean_absolute_error,
@@ -30,14 +31,19 @@ including evaluation metrics, feature importance and SHAP model interpretation.
 ##load data
 @st.cache_resource
 def load_model():
-    return joblib.load("models/profit_prediction_model.pkl")
+    BASE_DIR = Path(__file__).resolve().parent.parent
 
+    MODEL_PATH = BASE_DIR / "models" / "profit_prediction_model.pkl"
+
+    return joblib.load(MODEL_PATH)
 model = load_model()
 
 ##load dataset
 @st.cache_data
 def load_data():
-    return pd.read_csv("../data_folder/feature_engineerd_data.csv")
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    DATA_PATH = BASE_DIR / "data_folder" / "feature_engineerd_data.csv"
+    return pd.read_csv(DATA_PATH)
 
 
 df = load_data()
