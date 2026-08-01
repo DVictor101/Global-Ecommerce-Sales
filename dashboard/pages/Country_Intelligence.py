@@ -167,7 +167,13 @@ summary = (
     .reset_index()
 )
 
-st.dataframe(summary, use_container_width=True)
+st.dataframe(
+    summary.style.format({
+        "Total_Profit": "${:,.2f}",
+        "Average_Profit": "${:,.2f}"
+    }),
+    use_container_width=True
+)
 
 #map showing profitability by country
 fig = px.choropleth(
