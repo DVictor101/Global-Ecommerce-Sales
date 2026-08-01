@@ -32,9 +32,19 @@ model = load_model()
 
 @st.cache_data
 def load_data():
-    return BASE_DIR = Path(__file__).resolve().parent.parent
+    BASE_DIR = Path(__file__).resolve().parent.parent
     DATA_PATH = BASE_DIR / "data_folder" / "feature_engineerd_data.csv"
-    df = pd.read_csv(DATA_PATH)
+
+    # Debugging (remove these after confirming it works)
+    st.write("BASE_DIR:", BASE_DIR)
+    st.write("DATA_PATH:", DATA_PATH)
+    st.write("Exists:", DATA_PATH.exists())
+
+    if not DATA_PATH.exists():
+        st.error(f"Dataset not found:\n{DATA_PATH}")
+        st.stop()
+
+    return pd.read_csv(DATA_PATH)
 
 df = load_data()
 
