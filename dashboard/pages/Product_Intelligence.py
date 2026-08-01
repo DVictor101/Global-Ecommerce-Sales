@@ -1,94 +1,102 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from pathlib import Path
 
-#data
+#page configuration
+
+st.set_page_config(
+    page_title="Product Analysis",
+    page_icon="📦",
+    layout="centered"
+)
+
+st.title("📦 Product Analysis")
+
+st.markdown("""
+This page provides detailed insights into product performance by analyzing
+profitability, sales volume, discounts, and shipping costs across products
+and categories.
+""")
+
+st.markdown("---")
+
+#loading dataset
 @st.cache_data
 def load_data():
-    BASE_DIR = Path(__file__).resolve().parent.parent
+    return pd.read_csv("../data_folder/feature_engineerd_data.csv")
 
-    DATA_PATH = BASE_DIR / "data_folder" / "Feature_engineered_data.csv"
-
-    df = pd.read_csv(DATA_PATH)
-    df["Order_Date"] = pd.to_datetime(df["Order_Date"])
-    return df
+from utils.filters import sidebar_filters
 
 df = load_data()
 
-#title
-st.title("📦 Product Intelligence")
+df = sidebar_filters(df)
 
-st.markdown("""
-Analyze product performance to identify the products and categories
-that drive revenue and profitability.
-""")
+#category filter 
 
-#sidebar
-country = st.sidebar.selectbox(
-    "Country",
-    ["All"] + sorted(df["Country"].unique())
+category = st.selectbox(
+    "Select Product Category",
+    sorted(df["Category"].unique())
 )
 
-category = st.sidebar.selectbox(
-    "Category",
-    ["All"] + sorted(df["Category"].unique())
+category_df = df[df["Category"] == category]
+
+#kpi cards 
+
+total_profit = category_df["Profit"].sum()
+
+average_profit = category_df["Profit"].mean()
+
+total_quantity = category_df["Quantity"].sum()
+
+products = category_df["Product_Name"].nunique()
+
+col1, col2, col3, col4 = st.columns(4)
+
+col1.metric("💰 Total Profit", f"${total_profit:,.2f}")
+
+col2.metric("📈 Average Profit", f"${average_profit:.2f}")
+
+col3.metric("📦 Quantity Sold", f"{total_quantity:,}")
+
+col4.metric("🛍 Products", products)
+
+##profit subcategory
+
+st.markdown("---")
+
+st.subheader("Profit by Sub-Category")
+
+subcategory_profit = (
+    category_df
+    .groupby("Sub_Category")["Profit"]
+    .sum()
+    .sort_values(ascending=False)
+    .reset_index()
 )
 
-subcategory = st.sidebar.selectbox(
-    "Sub Category",
-    ["All"] + sorted(df["Sub_Category"].unique())
+fig = px.bar(
+    subcategory_profit,
+    x="Sub_Category",
+    y="Profit",
+    color="Profit",
+    text_auto=".2s"
 )
 
-#filters
-filtered_df = df.copy()
+st.plotly_chart(fig, use_container_width=True)
 
-if country != "All":
-    filtered_df = filtered_df[
-        filtered_df["Country"] == country
-    ]
+##top 10 most profitable product
 
-if category != "All":
-    filtered_df = filtered_df[
-        filtered_df["Category"] == category
-    ]
+st.markdown("---")
 
-if subcategory != "All":
-    filtered_df = filtered_df[
-        filtered_df["Sub_Category"] == subcategory
-    ]
+st.subheader("Top 10 Products")
 
-# product kpi
-
-total_products = filtered_df["Product_Name"].nunique()
-
-total_revenue = filtered_df["Revenue"].sum()
-
-total_profit = filtered_df["Profit"].sum()
-
-average_profit = filtered_df["Profit"].mean()
-
-k1, k2, k3, k4 = st.columns(4)
-
-k1.metric("Products", total_products)
-
-k2.metric("Revenue", f"${total_revenue:,.0f}")
-
-k3.metric("Profit", f"${total_profit:,.0f}")
-
-k4.metric("Avg Profit / Order", f"${average_profit:,.2f}")
-
-
-#top 10 products
 top_products = (
-    filtered_df
-    .groupby("Product_Name", as_index=False)
-    .agg({
-        "Revenue": "sum",
-        "Profit": "sum"
-    })
-    .sort_values("Profit", ascending=False)
+    category_df
+    .groupby("Product_Name")["Profit"]
+    .sum()
+    .sort_values(ascending=False)
     .head(10)
+    .reset_index()
 )
 
 fig = px.bar(
@@ -97,24 +105,28 @@ fig = px.bar(
     y="Product_Name",
     orientation="h",
     color="Profit",
-    text_auto=".2s",
-    title="Top 10 Products by Profit"
+    text_auto=".2s"
 )
 
-fig.update_layout(yaxis=dict(categoryorder="total ascending"))
+fig.update_layout(
+    yaxis={"categoryorder": "total ascending"}
+)
 
 st.plotly_chart(fig, use_container_width=True)
 
-# bottom 10product
+##bottom 10 products
+
+st.markdown("---")
+
+st.subheader("Bottom 10 Products")
+
 bottom_products = (
-    filtered_df
-    .groupby("Product_Name", as_index=False)
-    .agg({
-        "Revenue": "sum",
-        "Profit": "sum"
-    })
-    .sort_values("Profit")
+    category_df
+    .groupby("Product_Name")["Profit"]
+    .sum()
+    .sort_values()
     .head(10)
+    .reset_index()
 )
 
 fig = px.bar(
@@ -123,133 +135,79 @@ fig = px.bar(
     y="Product_Name",
     orientation="h",
     color="Profit",
-    text_auto=".2s",
-    title="Bottom 10 Products by Profit"
+    text_auto=".2s"
 )
 
-fig.update_layout(yaxis=dict(categoryorder="total ascending"))
-
-st.plotly_chart(fig, use_container_width=True)
-
-## category performance 
-category_summary = (
-    filtered_df
-    .groupby("Category", as_index=False)
-    .agg({
-        "Revenue": "sum",
-        "Profit": "sum"
-    })
-)
-
-#revenue
-fig = px.bar(
-    category_summary,
-    x="Category",
-    y="Revenue",
-    color="Revenue",
-    title="Revenue by Category"
+fig.update_layout(
+    yaxis={"categoryorder": "total descending"}
 )
 
 st.plotly_chart(fig, use_container_width=True)
 
-#profit
-fig = px.bar(
-    category_summary,
-    x="Category",
-    y="Profit",
-    color="Profit",
-    title="Profit by Category"
-)
+##discount by profit
+st.markdown("---")
 
-st.plotly_chart(fig, use_container_width=True)
-
-##subcategory performance
-subcategory_summary = (
-    filtered_df
-    .groupby("Sub_Category", as_index=False)
-    .agg({
-        "Revenue": "sum",
-        "Profit": "sum"
-    })
-    .sort_values("Profit", ascending=False)
-)
-
-fig = px.bar(
-    subcategory_summary,
-    x="Sub_Category",
-    y="Profit",
-    color="Profit",
-    title="Profit by Sub-Category"
-)
-
-st.plotly_chart(fig, use_container_width=True)
-
-#revenue by profit
-
-scatter_data = (
-    filtered_df
-    .groupby("Product_Name", as_index=False)
-    .agg({
-        "Revenue": "sum",
-        "Profit": "sum"
-    })
-)
+st.subheader("Discount vs Profit")
 
 fig = px.scatter(
-    scatter_data,
-    x="Revenue",
+    category_df,
+    x="Discount",
     y="Profit",
-    size="Revenue",
-    color="Profit",
-    hover_name="Product_Name",
-    title="Revenue vs Profit by Product"
+    color="Sub_Category",
+    hover_name="Product_Name"
 )
 
 st.plotly_chart(fig, use_container_width=True)
 
-#product summary table
-product_summary = (
-    filtered_df
-    .groupby("Product_Name", as_index=False)
-    .agg({
-        "Revenue": "sum",
-        "Profit": "sum",
-        "Quantity": "sum"
-    })
-    .sort_values("Profit", ascending=False)
+## quantity vs profit
+
+
+st.markdown("---")
+
+st.subheader("Quantity Sold vs Profit")
+
+fig = px.scatter(
+    category_df,
+    x="Quantity",
+    y="Profit",
+    color="Sub_Category",
+    hover_name="Product_Name"
 )
 
-st.subheader("📋 Product Summary")
+st.plotly_chart(fig, use_container_width=True)
 
-st.dataframe(
-    product_summary,
-    use_container_width=True,
-    hide_index=True
+##shipping vs cost
+
+st.markdown("---")
+st.subheader("Shipping Cost vs Profit")
+
+fig = px.scatter(
+    category_df,
+    x="Shipping_Cost",
+    y="Profit",
+    color="Sub_Category",
+    hover_name="Product_Name"
 )
 
+st.plotly_chart(fig, use_container_width=True)
 
-#BUSINESS RECOMMENDATION
-best_product = product_summary.iloc[0]
-worst_product = product_summary.iloc[-1]
+##product summary table
 
-best_category = (
-    category_summary
-    .sort_values("Profit", ascending=False)
-    .iloc[0]
+st.markdown("---")
+
+st.subheader("Product Summary")
+
+summary = (
+    category_df
+    .groupby("Product_Name")
+    .agg(
+        Total_Profit=("Profit", "sum"),
+        Average_Profit=("Profit", "mean"),
+        Quantity=("Quantity", "sum"),
+        Average_Discount=("Discount", "mean"),
+        Average_Shipping_Cost=("Shipping_Cost", "mean")
+    )
+    .reset_index()
 )
 
-st.success(f"""
-## Product Insights
-
-🏆 Best Product: **{best_product['Product_Name']}**
-
-💰 Total Profit: **${best_product['Profit']:,.0f}**
-
-📦 Best Category: **{best_category['Category']}**
-
-📉 Lowest Performing Product: **{worst_product['Product_Name']}**
-
-### Recommendation
-
-Increase inventory and marketing for **{best_product['Product_Name']}** and focus investment on the **{best_category['Category']}** category. Review pricing, promotions, or demand for **{worst_product['Product_Name']}** to improve its performance or consider reducing investment.
-""")
+st.dataframe(summary, use_container_width=True)
