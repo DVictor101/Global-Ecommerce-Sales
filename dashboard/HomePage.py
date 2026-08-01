@@ -2,35 +2,12 @@ import streamlit as st
 from pathlib import Path
 
 #stetting preferred padding
-st.markdown("""
-<style>
 
-/* Remove default Streamlit padding */
-.block-container{
-    padding-top:0rem;
-    padding-left:0rem;
-    padding-right:0rem;
-    padding-bottom:0rem;
-}
-
-/* Remove the top blank space */
-[data-testid="stHeader"]{
-    background:transparent;
-}
-
-/* Make the app use the full width */
-[data-testid="stAppViewContainer"]{
-    padding:0;
-}
-
-</style>
-""", unsafe_allow_html=True)
 
 st.set_page_config(
     page_title="AI-Powered Customer Intelligence Platform",
-    
-    layout = "wide",
-    initial_sidebar_state = "collapsed"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 

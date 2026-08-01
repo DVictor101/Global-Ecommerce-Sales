@@ -1,258 +1,172 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from pathlib import Path
 
-#load data
+#page confiuration
+st.set_page_config(
+    page_title="Country Analysis",
+    page_icon="🌍",
+    layout="centered"
+)
 
+st.title("🌍 Country Analysis")
+
+st.markdown("""
+This page analyzes the profitability and sales performance of different countries,
+helping identify the strongest markets and opportunities for expansion.
+""")
+
+st.markdown("---")
+
+#loading dataset
 @st.cache_data
 def load_data():
-    BASE_DIR = Path(__file__).resolve().parent.parent
+    return pd.read_csv("../data_folder/feature_engineerd_data.csv")
 
-    DATA_PATH = BASE_DIR / "data_folder" / "Feature_engineered_data.csv"
-
-    df = pd.read_csv(DATA_PATH)
-    df["Order_Date"] = pd.to_datetime(df["Order_Date"])
-    return df
+from utils.filters import sidebar_filters
 
 df = load_data()
 
-#title
-st.title("🌍 Country Intelligence")
-
-st.markdown("""
-Identify the most profitable countries for business expansion
-using sales, profit and customer metrics.
-""")
-
-#sidebar
-country = st.sidebar.selectbox(
-    "Country",
+df = sidebar_filters(df)
+##country filter
+country = st.selectbox(
+    "Select a Country",
     sorted(df["Country"].unique())
 )
 
-#filter
-country_df = df[
-    df["Country"] == country
-]
+country_df = df[df["Country"] == country]
 
-#country kapi
-#revenue
+#country kpi
 
-revenue = country_df["Revenue"].sum()
+total_profit = country_df["Profit"].sum()
+average_profit = country_df["Profit"].mean()
+transactions = len(country_df)
+quantity = country_df["Quantity"].sum()
 
-#profit
-profit = country_df["Profit"].sum()
+col1, col2, col3, col4 = st.columns(4)
 
-#orders
-orders = len(country_df)
+col1.metric("💰 Total Profit", f"${total_profit:,.2f}")
+col2.metric("📦 Quantity Sold", f"{quantity:,}")
+col3.metric("🛒 Transactions", f"{transactions:,}")
+col4.metric("📈 Average Profit", f"${average_profit:.2f}")
 
-#customers
-customers = country_df["Customer_ID"].nunique()
+##product by categoy
+st.markdown("---")
 
-#average order
-average_order = revenue/orders
+st.subheader(f"Profit by Category in {country}")
 
-#profit margin
-profit_margin = profit/revenue*100
-
-#displaying our data
-k1,k2,k3 = st.columns(3)
-
-k4,k5,k6 = st.columns(3)
-
-k1.metric("Revenue",f"${revenue:,.0f}")
-
-k2.metric("Profit",f"${profit:,.0f}")
-
-k3.metric("Orders",orders)
-
-k4.metric("Customers",customers)
-
-k5.metric("Average Order",f"${average_order:,.2f}")
-
-k6.metric("Profit Margin",f"{profit_margin:.2f}%")
-
-#monthly revenue trend
-monthly = (
+category_profit = (
     country_df
-    .groupby("Order_Date",as_index=False)["Revenue"]
+    .groupby("Category")["Profit"]
     .sum()
+    .reset_index()
 )
 
-fig = px.line(
-    monthly,
-    x="Order_Date",
-    y="Revenue",
-    markers=True
-)
-
-st.plotly_chart(fig,use_container_width=True)
-
-#monthly profit trend
-monthly = (
-    country_df
-    .groupby("Order_Date",as_index=False)["Profit"]
-    .sum()
-)
-
-fig = px.line(
-    monthly,
-    x="Order_Date",
-    y="Profit",
-    markers=True
-)
-
-st.plotly_chart(fig,use_container_width=True)
-
-#category perfoemance
-category = (
-    country_df
-    .groupby("Category",as_index=False)
-    .agg({
-        "Revenue":"sum",
-        "Profit":"sum"
-    })
-)
-
-#revenue
 fig = px.bar(
-    category,
-    x="Category",
-    y="Revenue",
-    color="Revenue"
-)
-
-st.plotly_chart(fig,use_container_width=True)
-#profit
-fig = px.bar(
-    category,
+    category_profit,
     x="Category",
     y="Profit",
-    color="Profit"
+    color="Profit",
+    text_auto=".2s",
+    title=f"Category Profit in {country}"
 )
 
-st.plotly_chart(fig,use_container_width=True)
+st.plotly_chart(fig, use_container_width=True)
 
-##top products
+#top products
+st.markdown("---")
 
-products = (
+st.subheader(f"Top 10 Products in {country}")
+
+top_products = (
     country_df
-    .groupby("Product_Name",as_index=False)
-    .agg({
-        "Revenue":"sum",
-        "Profit":"sum"
-    })
-    .sort_values(
-        "Profit",
-        ascending=False
-    )
+    .groupby("Product_Name")["Profit"]
+    .sum()
+    .sort_values(ascending=False)
     .head(10)
+    .reset_index()
 )
 
 fig = px.bar(
-    products,
+    top_products,
     x="Profit",
     y="Product_Name",
     orientation="h",
-    color="Profit"
+    color="Profit",
+    text_auto=".2s"
 )
 
-st.plotly_chart(fig,use_container_width=True)
-
-#customer segment
-
-segment = (
-    country_df
-    .groupby("Customer_Segment",as_index=False)
-    .agg({
-        "Revenue":"sum",
-        "Profit":"sum"
-    })
+fig.update_layout(
+    yaxis={"categoryorder": "total ascending"}
 )
 
-fig = px.pie(
-    segment,
-    names="Customer_Segment",
-    values="Profit"
+st.plotly_chart(fig, use_container_width=True)
+
+#profit distribution
+st.markdown("---")
+
+st.subheader("Profit Distribution")
+
+fig = px.histogram(
+    country_df,
+    x="Profit",
+    nbins=30,
+    title="Distribution of Profit"
 )
 
-st.plotly_chart(fig,use_container_width=True)
+st.plotly_chart(fig, use_container_width=True)
 
-#payment menthod
-payment = (
-    country_df
-    .groupby("Payment_Method",as_index=False)
-    .agg({
-        "Profit":"sum"
-    })
+#compare all countries
+st.markdown("---")
+
+st.subheader("Country Profit Ranking")
+
+ranking = (
+    df
+    .groupby("Country")["Profit"]
+    .sum()
+    .sort_values(ascending=False)
+    .reset_index()
 )
+
 fig = px.bar(
-    payment,
-    x="Payment_Method",
+    ranking,
+    x="Country",
     y="Profit",
-    color="Profit"
+    color="Profit",
+    text_auto=".2s"
 )
 
-st.plotly_chart(fig,use_container_width=True)
+st.plotly_chart(fig, use_container_width=True)
 
+#country summary table
+st.markdown("---")
 
-#shipping method
-shipping = (
-    country_df
-    .groupby("Shipping_Method",as_index=False)
-    .agg({
-        "Profit":"sum"
-    })
-)
-fig = px.bar(
-    shipping,
-    x="Shipping_Method",
-    y="Profit",
-    color="Profit"
-)
+st.subheader("Country Summary")
 
-st.plotly_chart(fig,use_container_width=True)
-
-# AI BUSINES RECOMMENDATION
-top_category = (
-    category
-    .sort_values("Profit",ascending=False)
-    .iloc[0]
+summary = (
+    df
+    .groupby("Country")
+    .agg(
+        Total_Profit=("Profit", "sum"),
+        Average_Profit=("Profit", "mean"),
+        Total_Quantity=("Quantity", "sum"),
+        Transactions=("Profit", "count")
+    )
+    .reset_index()
 )
 
-top_product = (
-    products
-    .iloc[0]
+st.dataframe(summary, use_container_width=True)
+
+#map showing profitability by country
+fig = px.choropleth(
+    ranking,
+    locations="Country",
+    locationmode="country names",
+    color="Profit",
+    hover_name="Country",
+    color_continuous_scale="Viridis",
+    title="Global Profit Distribution"
 )
 
-top_segment = (
-    segment
-    .sort_values("Profit",ascending=False)
-    .iloc[0]
-)
-
-#DISPLAY
-st.success(f"""
-## Business Recommendation
-
-📍 Country: **{country}**
-
-✅ Total Profit: **${profit:,.0f}**
-
-✅ Profit Margin: **{profit_margin:.2f}%**
-
-📦 Best Category:
-**{top_category['Category']}**
-
-🛍 Best Product:
-**{top_product['Product_Name']}**
-
-👥 Most Profitable Customer Segment:
-**{top_segment['Customer_Segment']}**
-
-### Recommendation
-
-This market demonstrates strong profitability and customer demand.
-Investment should prioritize the **{top_category['Category']}** category while focusing marketing efforts on the **{top_segment['Customer_Segment']}** customer segment.
-""")
+st.plotly_chart(fig, use_container_width=True)

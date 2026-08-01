@@ -1,169 +1,162 @@
 import streamlit as st
 import pandas as pd
 import joblib
-from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 
-MODEL_PATH = BASE_DIR / "models" / "profit_prediction_model.pkl"
+#page configuration
 
-model = joblib.load(MODEL_PATH)
+st.set_page_config(
+    page_title="Profit Prediction",
+    page_icon="🤖",
+    layout="centered"
+)
+
+st.title("🤖 Profit Prediction")
+
+st.markdown("""
+Use the trained XGBoost model to estimate the expected profit for a new
+e-commerce transaction.
+""")
+
+st.markdown("---")
+
+##loadin the dataset
+
+@st.cache_resource
+def load_model():
+    return joblib.load("models/profit_prediction_model.pkl")
+
+model = load_model()
+
+
 @st.cache_data
 def load_data():
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    DATA_PATH = BASE_DIR / "data_folder" / "Feature_engineered_data.csv"
-
-    df = pd.read_csv(DATA_PATH)
-    return df
+    return pd.read_csv("../data_folder/feature_engineerd_data.csv")
 
 df = load_data()
 
-st.title("AI Profit Prediction")
+##building input form
+st.subheader("Enter Transaction Details")
 
-st.markdown("""
-Predict the expected profit for a future order.
-""")
+col1, col2 = st.columns(2)
 
-#user inputs
+with col1:
 
-#season
-season = st.selectbox(
-    "Season",
-    sorted(df["Season"].unique())
-)
+    season = st.selectbox(
+        "Season",
+        sorted(df["Season"].unique())
+    )
 
-#region
-region = st.selectbox(
-    "Region",
-    sorted(df["Region"].unique())
-)
+    country = st.selectbox(
+        "Country",
+        sorted(df["Country"].unique())
+    )
 
-#country
-country = st.selectbox(
-    "Country",
-    sorted(df["Country"].unique())
-)
+    category = st.selectbox(
+        "Category",
+        sorted(df["Category"].unique())
+    )
 
-#category
-category = st.selectbox(
-    "Category",
-    sorted(df["Category"].unique())
-)
+    sub_category = st.selectbox(
+        "Sub Category",
+        sorted(df["Sub_Category"].unique())
+    )
 
-#subcategory
-subcategory = st.selectbox(
-    "Sub Category",
-    sorted(df["Sub_Category"].unique())
-)
-
-# Product Name
-product_name = st.selectbox(
-    "Product Name",
-    sorted(df["Product_Name"].unique())
-)
-
-#unit price
-unit_price = st.number_input(
-    "Unit Price",
-    min_value=1.0,
-    value=100.0
-)
+    product = st.selectbox(
+        "Product Name",
+        sorted(df["Product_Name"].unique())
+    )
 
 
-#quantity]
-quantity = st.number_input(
-    "Quantity",
-    min_value=1,
-    value=5
-)
+with col2:
+
+    unit_price = st.number_input(
+        "Unit Price",
+        min_value=0.0,
+        value=100.0
+    )
+
+    quantity = st.number_input(
+        "Quantity",
+        min_value=1,
+        value=1
+    )
+
+    discount = st.number_input(
+        "Discount (%)",
+        min_value=0.0,
+        max_value=100.0,
+        value=0.0
+    )
+
+    shipping_cost = st.number_input(
+        "Shipping Cost",
+        min_value=0.0,
+        value=10.0
+    )
+
+    shipping_days = st.number_input(
+        "Shipping Days",
+        min_value=1,
+        value=5
+    )
+
+    payment_method = st.selectbox(
+        "Payment Method",
+        sorted(df["Payment_Method"].unique())
+    )
+
+    ##prediction button
+
+    predict = st.button("Predict Profit")
+
+    ##preparing input
+    if predict:
+        new_data = pd.DataFrame({
+
+        "Season":[season],
+        "Country":[country],
+        "Category":[category],
+        "Sub_Category":[sub_category],
+        "Product_Name":[product],
+        "Unit_Price":[unit_price],
+        "Quantity":[quantity],
+        "Discount":[discount],
+        "Shipping_Cost":[shipping_cost],
+        "Shipping_Days":[shipping_days],
+        "Payment_Method":[payment_method]
+
+    })
+        prediction = model.predict(new_data)[0]
+        st.markdown("---")
+        st.subheader("Prediction")
+        st.success(
+            f"Predicted Profit: ${prediction:,.2f}"
+            )
+
+        #probability rating
+        if prediction > 400:
+            st.success("🟢 High Profitability")
+        elif prediction > 150:
+            st.warning("🟡 Moderate Profitability")
+        else:
+            st.error("🔴 Low Profitability")
+            #display input summary
+            st.markdown("---")
+            st.subheader("Transaction Summary")
+            st.dataframe(new_data)
+            ## add prediction tips
+            st.markdown("---")
+            st.info("""Tips for improving profitability:
+            Increase sales quantity.
+            Avoid excessive discounts.
+            Focus on profitable countries.
+            Reduce shipping costs where possible.
+            Prioritize high-performing products.
+            """)
 
 
-#discount
-discount = st.slider(
-    "Discount (%)",
-    0,
-    50,
-    10
-)
-
-#shipping cost
-shipping_cost = st.number_input(
-    "Shipping Cost",
-    min_value=0.0,
-    value=20.0
-)
-
-# Shipping Method
-shipping_method = st.selectbox(
-    "Shipping Method",
-    sorted(df["Shipping_Method"].unique())
-)
-
-#shipping days
-shipping_days = st.slider(
-    "Shipping Days",
-    1,
-    20,
-    5
-)
-
-# Payment Method
-payment_method = st.selectbox(
-    "Payment Method",
-    sorted(df["Payment_Method"].unique())
-)
-
-# prediction data
-input_df = pd.DataFrame({
-    "Country": [country],
-    "Region": [region],
-    "Category": [category],
-    "Sub_Category": [subcategory],
-    "Product_Name": [product_name],
-    "Season": [season],
-    "Shipping_Method": [shipping_method],
-    "Payment_Method": [payment_method],
-    "Quantity": [quantity],
-    "Unit_Price": [unit_price],
-    "Discount": [discount],
-    "Shipping_Cost": [shipping_cost],
-    "Shipping_Days": [shipping_days]
-})
-
-
-
-
-#prediction
-if st.button("Predict Profit"):
+#display prediction
    
 
-    prediction = model.predict(input_df)
-
-    st.success(f"Predicted Profit: ${prediction[0]:,.2f}")
-
-    # 👉 Move logic INSIDE here
-    if prediction[0] > 500:
-
-        st.success("""
-### Excellent Opportunity
-
-This configuration is expected to generate a high profit.
-It is a strong candidate for expansion.
-""")
-
-    elif prediction[0] > 250:
-
-        st.info("""
-### Moderate Opportunity
-
-The expected profit is positive but there may be room for improvement through pricing, discounts, or logistics.
-""")
-
-    else:
-
-        st.warning("""
-### Low Opportunity
-
-The predicted profit is relatively low. Consider reviewing pricing, costs, or market selection before expanding.
-""")
-print(model.feature_names_in_)
+    
