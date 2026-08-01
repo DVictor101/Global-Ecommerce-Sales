@@ -214,4 +214,13 @@ summary = (
     .reset_index()
 )
 
-st.dataframe(summary, use_container_width=True)
+st.dataframe(
+    summary.style.format({
+        "Total_Profit": "${:,.2f}",
+        "Average_Profit": "${:,.2f}",
+        "Average_Shipping_Cost": "${:,.2f}",
+        "Quantity": "{:,.0f}",
+        "Average_Discount": "{:.2%}"  
+    }),
+    use_container_width=True
+)

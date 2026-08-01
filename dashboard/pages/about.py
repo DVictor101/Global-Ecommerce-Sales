@@ -17,7 +17,7 @@ st.markdown("---")
 st.header("📌 Project Overview")
 
 st.write("""
-The **E-Commerce Country Profitability Prediction** project was developed to
+The **AI-Powered Global E-commerce Intelligence Platform** project was developed to
 help e-commerce businesses identify the factors that influence profitability
 across different countries and predict the expected profit of future
 transactions using machine learning.
@@ -53,7 +53,7 @@ st.header("📂 Dataset")
 
 st.write("""
 The dataset contains historical e-commerce transactions and includes
-features describing products, customer purchases, pricing,
+features describing products, product price, pricing,
 shipping, and profitability.
 
 Key variables include:
