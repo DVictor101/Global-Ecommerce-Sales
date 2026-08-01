@@ -19,21 +19,31 @@ helping identify the strongest markets and opportunities for expansion.
 
 st.markdown("---")
 
-#loading dataset
-@st.cache_data
+# Load dataset
 @st.cache_data
 def load_data():
     BASE_DIR = Path(__file__).resolve().parent.parent
     DATA_PATH = BASE_DIR / "data_folder" / "feature_engineered_data.csv"
 
+    # Debugging (remove these after confirming it works)
+    st.write("BASE_DIR:", BASE_DIR)
+    st.write("DATA_PATH:", DATA_PATH)
+    st.write("Exists:", DATA_PATH.exists())
+
+    if not DATA_PATH.exists():
+        st.error(f"Dataset not found:\n{DATA_PATH}")
+        st.stop()
+
     return pd.read_csv(DATA_PATH)
 
-from utils.filters import sidebar_filters
 
+# Load data
 df = load_data()
 
+# Apply sidebar filters
 df = sidebar_filters(df)
-##country filter
+
+# Country filter
 country = st.selectbox(
     "Select a Country",
     sorted(df["Country"].unique())
