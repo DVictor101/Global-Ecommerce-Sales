@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from pathlib import Path
+from utils.filters import sidebar_filters
 
 #page confiuration
 st.set_page_config(
@@ -41,7 +42,6 @@ def load_data():
 df = load_data()
 
 # Apply sidebar filters
-df = sidebar_filters(df)
 
 # Country filter
 country = st.selectbox(
